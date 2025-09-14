@@ -86,10 +86,11 @@ public class GameWorld {
 
 
     public void changeFoodConsumptionRate() {
-        // Spec: add a random non-zero delta in [-x, +x]; if <= 0, use old+1
-       
         Ant ant = findAnt();
-        if (ant != null) ant.setFoodConsumption();
+        if (ant != null) {
+            ant.setFoodConsumption();
+            System.out.println("Ant food consumption rate is now " + ant.getFoodConsumptionRate());
+        }
     }
 
     public void collisionFlag(int sequenceNumber) {
@@ -150,7 +151,7 @@ public class GameWorld {
     }
 
     public void gameClockTick() {
-        System.out.println("Clock tick.");
+    	System.out.println("Clock tick #" + clockTime + " (use d/m to see updates)");
         clockTime++;
 
         // Reduce ant food & check loss condition
