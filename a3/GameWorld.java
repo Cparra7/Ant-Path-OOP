@@ -149,25 +149,30 @@ public class GameWorld extends Observable {
 	}
 
 	// Ant + Spider collision
-	public void spiderCollision() {
-		IIterator it = gameObjects.getIterator();
-		while (it.hasNext()) {
-			GameObject obj = it.getNext();
-			if (obj instanceof Ant) {
-				((Ant) obj).collisionSpider();
-				if (getSound()) {
-					spiderSound.play();
-				}
-			}
-		}
+        public void spiderCollision() {
+                IIterator it = gameObjects.getIterator();
+                while (it.hasNext()) {
+                        GameObject obj = it.getNext();
+                        if (obj instanceof Ant) {
+                                ((Ant) obj).collisionSpider();
+                                // spawn a shockwave at ant location with random heading/speed
+                                Point origin = ((Ant) obj).getLocation();
+                                int heading = GameObject.random.nextInt(360);
+                                int speed = 20 + GameObject.random.nextInt(20);
+                                gameObjects.add(new ShockWave(origin, heading, speed, this));
+                                if (getSound()) {
+                                        spiderSound.play();
+                                }
+                        }
+                }
 		setChanged();
 		notifyObservers(this);
 	}
 
 	// Clock tick
-	public void clockTick() {
-		System.out.println("Clock has ticked.");
-		timer++;
+        public void clockTick() {
+                System.out.println("Clock has ticked.");
+                timer++;
 
 		IIterator it = gameObjects.getIterator();
 		while (it.hasNext()) {
@@ -186,10 +191,14 @@ public class GameWorld extends Observable {
 				}
 			}
 
-			// Spiders move
-			if (obj instanceof Spider) {
-				((Spider) obj).moveSpider(getWidth(), getHeight(), 20);
-			}
+                        // Spiders move
+                        if (obj instanceof Spider) {
+                                ((Spider) obj).moveSpider(getWidth(), getHeight(), 20);
+                        }
+
+                        if (obj instanceof ShockWave) {
+                                ((ShockWave) obj).tick(20);
+                        }
 
 			// deselect selectables each tick
 			if (obj instanceof ISelectable) {
@@ -197,8 +206,17 @@ public class GameWorld extends Observable {
 			}
 		}
 
-		// collisions pass
-		checkCollisions();
+                // collisions pass
+                checkCollisions();
+
+                // clean up expired shockwaves
+                IIterator cleanup = gameObjects.getIterator();
+                while (cleanup.hasNext()) {
+                        GameObject go = cleanup.getNext();
+                        if (go instanceof ShockWave && ((ShockWave) go).isExpired()) {
+                                gameObjects.remove(go);
+                        }
+                }
 
 		// bg music
 		if (getSound()) {
