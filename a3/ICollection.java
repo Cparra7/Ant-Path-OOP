@@ -6,6 +6,9 @@ public interface ICollection {
     // Add a GameObject to the collection
     void add(GameObject obj);
 
+    // Remove a GameObject from the collection
+    void remove(GameObject obj);
+
     // Return an iterator for looping through the collection
     IIterator getIterator();
 }

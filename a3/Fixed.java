@@ -1,7 +1,6 @@
 package com.mycompany.a3;
 
 import com.codename1.charts.models.Point;
-
 public abstract class Fixed extends GameObject implements ISelectable {
     
     // true if this object is currently selected (for repositioning)
@@ -13,14 +12,13 @@ public abstract class Fixed extends GameObject implements ISelectable {
     }
 
     // checks if a tap/click happened within this object's square bounds
-    public boolean contains(Point pPtrRelPrnt, Point pCmpRelPrnt) {
+    @Override
+    public boolean contains(float px, float py) {
         int size = getSize();
-        float px = pPtrRelPrnt.getX();
-        float py = pPtrRelPrnt.getY();
 
-        // find this object’s top-left corner in relation to the parent
-        float x = getX() + pCmpRelPrnt.getX() - (size / 2f);
-        float y = getY() + pCmpRelPrnt.getY() - (size / 2f);
+        // find this object’s top-left corner in relation to the MapView origin
+        float x = getX() - (size / 2f);
+        float y = getY() - (size / 2f);
 
         // return true if pointer coordinates are within the box
         return (px >= x && px <= x + size && py >= y && py <= y + size);

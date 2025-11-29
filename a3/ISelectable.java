@@ -9,10 +9,10 @@ public interface ISelectable {
 	
 	public boolean isSelected();
 	
-	// Draws the selected object 
-	public void draw(Graphics g, Point pCmpRelPrnt);
-	
-	// If the mouse is within the objects bounds
-	public boolean contains(Point pPtrRelPrnt, Point pCmpRelPrint);
+        // Draws the selected object
+        public void draw(Graphics g, Point pCmpRelPrnt);
+
+        // If the pointer (relative to the MapView) is within the object's bounds
+        public boolean contains(float px, float py);
 	
 }

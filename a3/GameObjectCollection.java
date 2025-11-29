@@ -18,6 +18,11 @@ public class GameObjectCollection implements ICollection {
         gameObjects.add(object);
     }
 
+    @Override
+    public void remove(GameObject obj) {
+        gameObjects.remove(obj);
+    }
+
     // return an iterator over the current snapshot
     @Override
     public IIterator getIterator() {
