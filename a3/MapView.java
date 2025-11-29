@@ -54,8 +54,9 @@ public class MapView extends Container implements Observer {
         int relX = xPointer - getParent().getAbsoluteX();
         int relY = yPointer - getParent().getAbsoluteY();
 
-        Point pPtrRelPrnt = new Point(relX, relY);
-        Point pCmpRelPrnt = new Point(getX(), getY());
+        // convert to coordinates relative to this MapView
+        float px = relX - getX();
+        float py = relY - getY();
 
         IIterator it = gw.getIterator();
         while (it.hasNext()) {
@@ -65,16 +66,14 @@ public class MapView extends Container implements Observer {
             Fixed fx = (Fixed) obj;
 
             // first click: select if pointer is inside
-            if (fx.contains(pPtrRelPrnt, pCmpRelPrnt)) {
+            if (fx.contains(px, py)) {
                 fx.setSelected(true);
                 gw.setPosition(false);     // selecting ends move mode
             }
             // second click: if selected, move (when position mode is on), then clear selection
             else if (fx.isSelected()) {
                 if (gw.getPosition()) {
-                    float newX = pPtrRelPrnt.getX() - pCmpRelPrnt.getX();
-                    float newY = pPtrRelPrnt.getY() - pCmpRelPrnt.getY();
-                    fx.setLocation(newX, newY);
+                    fx.setLocation(px, py);
                 }
                 gw.setPosition(false);
                 fx.setSelected(false);
