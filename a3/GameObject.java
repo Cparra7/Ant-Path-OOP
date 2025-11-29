@@ -2,6 +2,7 @@ package com.mycompany.a3;
 
 import com.codename1.charts.models.Point;
 import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.Transform;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -9,10 +10,14 @@ import java.util.Random;
 public abstract class GameObject implements IDrawable, ICollider {
 
     private int size;
-    private Point location;
     private int color;
     private GameWorld gw;
     private ArrayList<GameObject> collisionItems;
+
+    // Local transformations (translation/rotation/scale)
+    private Transform myTranslate;
+    private Transform myRotate;
+    private Transform myScale;
 
     protected static final Random random = new Random();
 
@@ -20,9 +25,18 @@ public abstract class GameObject implements IDrawable, ICollider {
     public GameObject(int color, int size, Point location, GameWorld gw) {
         this.color = color;
         this.size = size;
-        this.location = location;
         this.gw = gw;
         this.collisionItems = new ArrayList<>();
+
+        // initialize transforms
+        myTranslate = Transform.makeIdentity();
+        myRotate = Transform.makeIdentity();
+        myScale = Transform.makeIdentity();
+
+        // initial placement
+        if (location != null) {
+            translate(location.getX(), location.getY());
+        }
     }
 
     // Generates a random location within the given width and height
@@ -80,19 +94,19 @@ public abstract class GameObject implements IDrawable, ICollider {
     }
 
     public float getX() {
-        return location.getX();
+        return myTranslate.getTranslateX();
     }
 
     public float getY() {
-        return location.getY();
+        return myTranslate.getTranslateY();
     }
 
     public void setLocation(float x, float y) {
-        location = new Point(x, y);
+        myTranslate.setTranslation(x, y);
     }
 
     public Point getLocation() {
-        return location;
+        return new Point(myTranslate.getTranslateX(), myTranslate.getTranslateY());
     }
 
     public int getColor() {
@@ -110,5 +124,22 @@ public abstract class GameObject implements IDrawable, ICollider {
     // Gives subclasses access to the current GameWorld reference
     protected GameWorld getGameWorld() {
         return gw;
+    }
+
+    // --- Transform helpers ---
+    public Transform getMyTranslate() { return myTranslate; }
+    public Transform getMyRotate() { return myRotate; }
+    public Transform getMyScale() { return myScale; }
+
+    public void translate(float dx, float dy) {
+        myTranslate.translate(dx, dy);
+    }
+
+    public void rotate(float degrees) {
+        myRotate.rotate((float) Math.toRadians(degrees), 0, 0);
+    }
+
+    public void scale(float sx, float sy) {
+        myScale.scale(sx, sy);
     }
 }

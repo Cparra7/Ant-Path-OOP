@@ -24,7 +24,7 @@ public abstract class Movable extends GameObject {
         float dx = (float)(Math.sin(rad) * (speed / 10f));   // x to the right
         float dy = (float)(-Math.cos(rad) * (speed / 10f));  // y downward, so minus
 
-        setLocation(getX() + dx, getY() + dy);
+        translate(dx, dy);
     }
 
     // Keep inside bounds and reflect heading (no “inverted” feel after bounces)
@@ -57,6 +57,10 @@ public abstract class Movable extends GameObject {
         int h = heading % 360;
         if (h < 0) h += 360;
         this.heading = h;
+
+        // rotate local orientation so graphics can face movement
+        getMyRotate().setIdentity();
+        getMyRotate().rotate((float) Math.toRadians(h), 0, 0);
     }
 
     public int getSpeed() { return speed; }
